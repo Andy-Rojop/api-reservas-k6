@@ -1,0 +1,6 @@
+node_modules/
+results/_sandbox/
+results/ultimo/
+.env
+__pycache__/
+informe/

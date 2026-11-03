@@ -1,0 +1,18 @@
+{
+  "name": "api-reservas-k6",
+  "version": "1.0.0",
+  "description": "API de reservas con PostgreSQL para pruebas de carga y estrés con k6",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "db:reset": "node scripts/db-reset.js",
+    "db:verify": "node scripts/verify-invariants.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "pg": "8.13.1"
+  }
+}
