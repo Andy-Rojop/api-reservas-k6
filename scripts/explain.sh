@@ -2,6 +2,8 @@
 # Planes de ejecución reales (EXPLAIN ANALYZE BUFFERS) de las consultas de la API, con parámetros fijos.
 # Correr con el sistema SIN carga, después de un reset. Uso: scripts/explain.sh > results/<etiqueta>/explain.txt
 cd "$(dirname "$0")/.."
+# En v2-fix la consulta de disponibilidad agrega una cota inferior (ver src/app.js); se refleja si existe la migración 002.
+AVAIL_LOWER=""; ls db/migrations | grep -q 002_ && AVAIL_LOWER="AND start_at >= timestamptz '2026-05-04T06:00:00Z' - interval '240 minutes'"
 run() { echo; echo "=================== $1"; scripts/psql.sh -c "EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF) $2"; }
 
 run "LISTADO por recurso (página 3)" \
@@ -24,4 +26,4 @@ run "R5: reservas del cliente en el día (dentro de POST /reservations)" \
    AND start_at >= '2028-03-01T06:00:00Z' AND start_at < '2028-03-02T06:00:00Z'"
 run "DISPONIBILIDAD de un recurso en un día" \
 "SELECT start_at, end_at FROM reservations WHERE resource_id = 7 AND status = 'confirmed'
-   AND start_at < '2026-05-05T06:00:00Z' AND end_at > '2026-05-04T06:00:00Z' ORDER BY start_at"
+   AND start_at < '2026-05-05T06:00:00Z' AND end_at > '2026-05-04T06:00:00Z' $AVAIL_LOWER ORDER BY start_at"

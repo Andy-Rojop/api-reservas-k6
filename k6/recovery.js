@@ -5,6 +5,7 @@ import { mixedIteration, makeSummary } from './lib/common.js';
 const RATE = Number(__ENV.RECOVERY_RATE || 10);
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   scenarios: {
     recuperacion: {
       executor: 'constant-arrival-rate',

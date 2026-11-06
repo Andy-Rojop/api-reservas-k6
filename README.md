@@ -7,6 +7,7 @@ reproducibles y una batería k6 de humo, carga sostenida, estrés progresivo y r
 
 | Documento | Contenido |
 |---|---|
+| [`docs/GUIA.md`](docs/GUIA.md) | **Paso a paso**: instalar, medir antes/después (`scripts/run-all.sh`), generar el PDF (`scripts/build-report.py`) y grabar el video |
 | [`docs/PLAN.md`](docs/PLAN.md) | Demanda, mezcla de tráfico, escenarios, umbrales y límites de seguridad (fijados antes de medir) |
 | [`docs/DECISIONES.md`](docs/DECISIONES.md) | Decisiones técnicas y alternativas descartadas |
 | [`docs/HALLAZGO.md`](docs/HALLAZGO.md) | Hallazgo, evidencia, hipótesis, corrección, verificación y límites |
@@ -104,7 +105,10 @@ k6 run k6/smoke.js        # humo k6: también valida R1, R3, R4, R5 de punta a p
 
 ## 6. Pruebas de rendimiento
 
-Antes de **cada** corrida: `scripts/reset-env.sh`. Cada corrida guarda su evidencia en `results/<etiqueta>/<escenario>-<fecha>/`.
+**Todo junto y desatendido (recomendado):** `scripts/run-all.sh antes` en `v1-baseline` y `scripts/run-all.sh despues`
+en `v2-fix` (~60 min cada uno). Luego `scripts/build-report.py` genera el informe (ver `docs/GUIA.md`).
+
+Paso a paso manual: antes de **cada** corrida, `scripts/reset-env.sh`. Cada corrida guarda su evidencia en `results/<etiqueta>/<escenario>-<fecha>/`.
 
 ```bash
 scripts/reset-env.sh && scripts/run-test.sh smoke  antes

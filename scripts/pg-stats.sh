@@ -9,7 +9,7 @@ SELECT calls,
        rows,
        shared_blks_hit + shared_blks_read            AS blocks,
        round((100.0 * total_exec_time / sum(total_exec_time) OVER ())::numeric, 1) AS pct_tiempo,
-       left(regexp_replace(query, '\s+', ' ', 'g'), 110) AS query
+       left(regexp_replace(query, '\s+', ' ', 'g'), 260) AS query
   FROM pg_stat_statements
  WHERE dbid = (SELECT oid FROM pg_database WHERE datname = current_database())
  ORDER BY total_exec_time DESC

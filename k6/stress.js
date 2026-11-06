@@ -18,6 +18,7 @@ for (const s of steps) {
 const STRESS_MIN = stages.length * 1.5;          // 15 min
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   scenarios: {
     estres: {
       executor: 'ramping-arrival-rate',

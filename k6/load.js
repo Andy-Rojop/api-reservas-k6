@@ -7,6 +7,7 @@ const RATE = Number(__ENV.RATE || 20);          // solicitudes/s esperadas (dema
 const DURATION = __ENV.DURATION || '10m';
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   discardResponseBodies: false,
   scenarios: {
     rampa: {

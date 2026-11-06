@@ -1,5 +1,5 @@
 node_modules/
-results/_sandbox/
+results/_sandbox*/
 results/ultimo/
 .env
 __pycache__/

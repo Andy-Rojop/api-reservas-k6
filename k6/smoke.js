@@ -5,6 +5,7 @@ import { check, sleep } from 'k6';
 import { BASE_URL, availability, listReservations, createReservation, makeSummary } from './lib/common.js';
 
 export const options = {
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)'],
   vus: 1,
   duration: __ENV.DURATION || '1m',
   thresholds: {

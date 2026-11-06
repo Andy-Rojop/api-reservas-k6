@@ -77,7 +77,12 @@ def main():
                yerr=A.loc[order, f"{m}_sd"] if f"{m}_sd" in A else None, capsize=3)
         ax.bar([x + w / 2 for x in xs], D.loc[order, m], w, label="después", color="#1f6feb",
                yerr=D.loc[order, f"{m}_sd"] if f"{m}_sd" in D else None, capsize=3)
-        ax.set_xticks(list(xs)); ax.set_xticklabels(order); ax.set_ylabel("ms"); ax.set_title(f"{m} — fase {a.fase}")
+        for c in ax.containers:
+            if hasattr(c, "datavalues"):
+                ax.bar_label(c, fmt="%.0f", fontsize=8, padding=2)
+        if A.loc[order, m].max() > 20 * max(D.loc[order, m].min(), 0.1):
+            ax.set_yscale("log")   # diferencias de órdenes de magnitud: escala log para que ambas barras se vean
+        ax.set_xticks(list(xs)); ax.set_xticklabels(order); ax.set_ylabel("ms" + (" (escala log)" if ax.get_yscale() == "log" else "")); ax.set_title(f"{m} — fase {a.fase}")
         ax.grid(axis="y", alpha=.3); ax.legend()
     fig.tight_layout(); fig.savefig(out / "compare.png", dpi=130)
     print(cmp_.to_string())
