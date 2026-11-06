@@ -91,7 +91,8 @@ interpretación de `dropped_iterations`, recuperación, comparación y regresion
 algo no coincide con lo que viste (p. ej. detuviste a mano), editá `informe/informe.html` con cualquier editor de texto
 y volvé a imprimir. Agregá la captura del Administrador de tareas si la tomaste.
 
-Hacé commit también de `informe/` y de `results/comparacion-*` para que todo quede en el repo.
+Subí también las comparaciones: `git add results/comparacion-* && git commit -m "Comparaciones" && git push`.
+El PDF se entrega en la plataforma del curso (la carpeta `informe/` no se versiona).
 
 ## 7. Video (máx. 3 min)
 
