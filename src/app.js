@@ -58,6 +58,9 @@ app.get('/resources/:id/availability', asyncH(async (req, res) => {
         AND status = 'confirmed'
         AND start_at < $3
         AND end_at   > $2
+        -- Cota inferior equivalente por R1 (ninguna reserva dura más de 240 min):
+        -- permite un rango acotado sobre el índice (resource_id, start_at)
+        AND start_at >= $2::timestamptz - interval '240 minutes'
       ORDER BY start_at`,
     [id, dayStart, dayEnd]
   );
