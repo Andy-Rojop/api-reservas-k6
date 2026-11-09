@@ -345,8 +345,10 @@ def stress_text(S, label):
     if S["sat"]:
         m, row, why = S["sat"]
         t.append(f"<p><b>Saturación:</b> primer minuto que incumple los criterios del plan: minuto {m} con ≈{row.ofrecidas:.0f} "
-                 f"req/s ofrecidas ({'; '.join(why)}). <b>Capacidad sostenible</b> ≈ {S['capacity']:.0f} req/s "
-                 f"(último nivel que cumplió todos los criterios).</p>")
+                 f"req/s ofrecidas ({'; '.join(why)}). "
+                 + (f"<b>Capacidad sostenible</b> ≈ {S['capacity']:.0f} req/s (último nivel que cumplió todos los criterios).</p>"
+                    if S["capacity"] is not None and not np.isnan(S["capacity"]) else
+                    "<b>Capacidad sostenible inferior al primer escalón</b>: ningún minuto completo cumplió los criterios.</p>"))
     else:
         t.append(f"<p><b>No se alcanzó saturación dentro del límite seguro</b>: hasta ≈{peak:.0f} req/s ofrecidas todos los "
                  f"minutos cumplieron los umbrales de latencia, throughput y errores. Se declara así, sin subir el tope.</p>")
@@ -620,8 +622,10 @@ AND start_at >= $2::timestamptz - interval '240 minutes'</pre>
                     notes.append(f"<li>{EP_ES[ep].capitalize()}: p95 {ms(a_.p95)} → {ms(d_.p95)} ms; la diferencia está dentro de la variación entre corridas (±{ms(noise)} ms), no se considera regresión.</li>")
     sat_txt = ""
     if SA and SD:
-        ca = f"≈{SA['capacity']:.0f} req/s" if SA["sat"] else f"sin saturar hasta ≈{SA['pm'].ofrecidas.max():.0f} req/s"
-        cd = f"≈{SD['capacity']:.0f} req/s" if SD["sat"] else f"sin saturar hasta ≈{SD['pm'].ofrecidas.max():.0f} req/s (límite seguro)"
+        cap = lambda S_: (f"≈{S_['capacity']:.0f} req/s" if S_["capacity"] is not None and not np.isnan(S_["capacity"])
+                          else "inferior al primer escalón (20 req/s)")
+        ca = cap(SA) if SA["sat"] else f"sin saturar hasta ≈{SA['pm'].ofrecidas.max():.0f} req/s"
+        cd = cap(SD) if SD["sat"] else f"sin saturar hasta ≈{SD['pm'].ofrecidas.max():.0f} req/s (límite seguro)"
         sat_txt = f"<p><b>Capacidad sostenible:</b> antes {ca}; después {cd}. Antes: dropped_iterations = {SA['dropped']:,}; después = {SD['dropped']:,}.</p>"
     h.append(f"""<h2 class="brk">7. Comparación antes / después</h2>
 <p>Condiciones equivalentes: mismo equipo, límites, versiones, volumen de datos restablecido, semilla, demanda y umbrales
