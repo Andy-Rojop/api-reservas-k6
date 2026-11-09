@@ -1,0 +1,9 @@
+fase,endpoint,solicitudes,req/s,p50_ms,p90_ms,p95_ms,p99_ms,max_ms,error_%,409/422,dropped,corrida,carpeta,lado
+stress,(todos),606,9.18,2328.0,4181.2,5180.9,6457.6,10593.2,0.0,1,47,1,results/antes/stress-20261108-210439,antes
+stress,availability,357,5.41,2572.8,3881.3,5188.2,6061.9,6147.1,0.0,0,,1,results/antes/stress-20261108-210439,antes
+stress,list,170,2.58,1941.3,3151.0,4592.3,9318.1,10593.2,0.0,0,,1,results/antes/stress-20261108-210439,antes
+stress,create,79,1.2,3111.5,4818.2,6033.6,6576.9,6977.5,0.0,1,,1,results/antes/stress-20261108-210439,antes
+stress,(todos),51022,56.69,4.8,11.5,32.8,93.0,1045.3,0.0,326,7,1,results/despues/stress-20261108-222459,despues
+stress,availability,30714,34.13,4.4,5.5,6.7,64.5,678.8,0.0,0,,1,results/despues/stress-20261108-222459,despues
+stress,list,12616,14.02,5.0,34.4,46.0,141.9,1045.3,0.0,0,,1,results/despues/stress-20261108-222459,despues
+stress,create,7692,8.55,10.5,13.1,28.2,122.8,793.8,0.0,326,,1,results/despues/stress-20261108-222459,despues
