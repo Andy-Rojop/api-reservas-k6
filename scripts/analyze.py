@@ -18,11 +18,14 @@ BUCKET = 10  # segundos
 
 
 def load_raw(d: Path) -> pd.DataFrame:
-    df = pd.read_csv(d / "raw.csv.gz", usecols=["metric_name", "timestamp", "metric_value", "status", "extra_tags"],
-                     dtype={"status": "string", "extra_tags": "string"}, low_memory=False)
+    df = pd.read_csv(d / "raw.csv.gz", usecols=["metric_name", "timestamp", "metric_value", "status", "scenario", "extra_tags"],
+                     dtype={"status": "string", "scenario": "string", "extra_tags": "string"}, low_memory=False)
     tags = df["extra_tags"].fillna("")
     df["endpoint"] = tags.str.extract(r"(?:^|&)endpoint=([^&]+)")[0]
-    df["phase"] = tags.str.extract(r"(?:^|&)phase=([^&]+)")[0].fillna("-")
+    df["phase"] = tags.str.extract(r"(?:^|&)phase=([^&]+)")[0]
+    # k6 no propaga las etiquetas del escenario a dropped_iterations: se deduce la fase del nombre del escenario
+    SCEN_PHASE = {"rampa": "ramp", "sostenida": "steady", "estres": "stress", "recuperacion": "recovery"}
+    df["phase"] = df["phase"].fillna(df["scenario"].map(SCEN_PHASE)).fillna("-")
     t0 = df["timestamp"].min()
     df["t"] = df["timestamp"] - t0
     df["bucket"] = (df["t"] // BUCKET) * BUCKET

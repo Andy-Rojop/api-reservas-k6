@@ -194,8 +194,9 @@ def stress_stats(label):
 
     # Interpretación de dropped_iterations (sin atribuirlo automáticamente al servidor)
     total_drop = int(st[st.metric_name == "dropped_iterations"].metric_value.sum())
-    vus = st[st.metric_name == "vus"].metric_value.max()
-    vus_max = st[st.metric_name == "vus_max"].metric_value.max()
+    win = df[(df.t >= st.t.min()) & (df.t <= st.t.max())]  # vus/vus_max no llevan escenario: se toman por tiempo
+    vus = win[win.metric_name == "vus"].metric_value.max()
+    vus_max = win[win.metric_name == "vus_max"].metric_value.max()
     it = st[st.metric_name == "iteration_duration"]
     tl = pd.read_csv(r / "timeline.csv") if (r / "timeline.csv").exists() else pd.DataFrame()
     k6cpu = tl[tl.phase == "stress"].cpu_k6.max() if "cpu_k6" in tl else np.nan
@@ -203,8 +204,10 @@ def stress_stats(label):
     first_drop = pm[pm.dropped > 0].index.min() if (pm.dropped > 0).any() else None
     little = None
     if first_drop is not None and not it.empty:
-        itm = it[(it.t // 60) == first_drop].metric_value.mean() / 1000
-        little = (pm.loc[first_drop, "ofrecidas"], itm, pm.loc[first_drop, "ofrecidas"] * itm)
+        worst = pm.dropped.idxmax()  # minuto con más iteraciones perdidas
+        itm = it[(it.t // 60) == worst].metric_value.mean() / 1000
+        p95w = pm.loc[worst, "p95"]
+        little = (pm.loc[worst, "ofrecidas"], itm, pm.loc[worst, "ofrecidas"] * itm, worst, p95w)
 
     return {"run": r, "pm": pm, "sat": sat, "capacity": capacity, "aborted": aborted, "abort_line": abort_line,
             "abort_min": abort_min, "recovery": recovery, "dropped": total_drop, "vus": vus, "vus_max": vus_max,
@@ -297,9 +300,20 @@ def run_compare(fase, scen):
 def ensure_analyzed():
     for label in ("antes", "despues"):
         for scen in ("smoke", "load", "stress", "recovery"):
-            for r in runs(label, scen):
-                if not (r / "timeline.png").exists() or not (r / "timeline.csv").exists():
+            for r in runs(label, scen):  # siempre se regenera desde raw.csv.gz (versión actual del análisis)
                     subprocess.run([sys.executable, str(ROOT / "scripts/analyze.py"), str(r)], check=True, capture_output=True)
+
+
+def descartadas_html():
+    """Corridas separadas del análisis por un problema de ejecución documentado (results/_descartadas/)."""
+    d = RES / "_descartadas"
+    if not d.exists():
+        return ""
+    dirs = sorted(p for p in d.rglob("*") if p.is_dir() and (p / "raw.csv.gz").exists())
+    nota = read(d / "NOTA.txt").strip()
+    rows = "".join(f"<tr><td><code>{E(rel(p))}</code></td></tr>" for p in dirs)
+    return (f"<h3>Corridas descartadas</h3><p>Se conservan sin modificar pero no se usan en el análisis.</p>"
+            f"{pre(nota) if nota else ''}<table><tr><th>Carpeta</th></tr>{rows}</table>")
 
 
 # ───────────────────────────────────────────── texto interpretativo (desde los datos)
@@ -357,10 +371,12 @@ def stress_text(S, label):
         if not np.isnan(S["k6cpu"]) and S["k6cpu"] >= 85:
             msg += "k6 estuvo cerca de saturar su propio núcleo, así que <b>parte de las iteraciones perdidas puede deberse al generador</b>.</p>"
         elif S["vus"] >= 0.95 * S["vus_max"] and S["little"]:
-            rate, itd, need = S["little"]
-            msg += (f"Por la Ley de Little, a ≈{rate:.0f} iteraciones/s con duración media de iteración {itd:.2f} s se "
-                    f"necesitaban ≈{need:.0f} VUs, más que los {S['vus_max']:.0f} disponibles: las iteraciones se perdieron porque "
-                    f"<b>la latencia del servidor creció</b>, no por falta de CPU del generador (CPU de la BD hasta {S['dbcpu']:.0f} %).</p>")
+            rate, itd, need, worst, p95w = S["little"]
+            msg += (f"En el minuto {worst} (el de más pérdidas) se ofrecían ≈{rate:.0f} iteraciones/s y cada iteración tardaba en "
+                    f"promedio {itd:.2f} s (p95 de respuesta {ms(p95w)} ms). Por la Ley de Little (VUs ≈ tasa × duración) eso exige "
+                    f"≈{need:.0f} VUs ocupados simultáneamente; con los {S['vus_max']:.0f} VUs agotados, k6 no tuvo con quién iniciar "
+                    f"nuevas iteraciones. Como el generador tenía CPU de sobra, las pérdidas son <b>consecuencia de la latencia del "
+                    f"servidor</b> (CPU de la BD hasta {S['dbcpu']:.0f} %), no del generador.</p>")
         else:
             msg += "Los VUs no llegaron al máximo: revisar <code>k6-stdout.log</code> por avisos de asignación de VUs.</p>"
         t.append(msg)
@@ -643,6 +659,7 @@ distribución uniforme.</li></ul>
 <tr><td>pg_stat_statements.txt</td><td>Consultas que más tiempo consumieron</td></tr>
 <tr><td>env.txt · invariants.txt · exit_code.txt</td><td>Condiciones, reglas de negocio y resultado de umbrales (0 = OK, 99 = incumplido)</td></tr>
 <tr><td>analysis.md · timeline.png · timeline.csv</td><td>Generados por <code>scripts/analyze.py</code> desde los anteriores</td></tr></table>
+{descartadas_html()}
 <p>Comparaciones: <code>results/comparacion-load/</code> y <code>results/comparacion-stress/</code>. Planes:
 <code>results/&lt;antes|despues&gt;/explain.txt</code>. Bitácora de ejecución: <code>results/&lt;antes|despues&gt;/run-all.log</code>.</p>
 <h2>9. Video</h2>
