@@ -1,0 +1,1 @@
+time="2026-11-08T21:05:50-06:00" level=error msg="thresholds on metrics 'http_req_duration{phase:stress}' were crossed; at least one has abortOnFail enabled, stopping test prematurely"

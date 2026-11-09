@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: health
+ok 1 - health
+  ---
+  duration_ms: 56.439778
+  ...
+# Subtest: disponibilidad: estructura y 24 bloques
+ok 2 - disponibilidad: estructura y 24 bloques
+  ---
+  duration_ms: 21.521002
+  ...
+# Subtest: crear, traslape (R4) y límite diario (R5)
+ok 3 - crear, traslape (R4) y límite diario (R5)
+  ---
+  duration_ms: 151.324142
+  ...
+# Subtest: R5 bajo concurrencia: 6 solicitudes simultáneas, solo 2 éxitos
+ok 4 - R5 bajo concurrencia: 6 solicitudes simultáneas, solo 2 éxitos
+  ---
+  duration_ms: 209.880522
+  ...
+# Subtest: validaciones 400/422
+ok 5 - validaciones 400/422
+  ---
+  duration_ms: 85.04727
+  ...
+# Subtest: listado paginado: orden, límites y totales coherentes
+ok 6 - listado paginado: orden, límites y totales coherentes
+  ---
+  duration_ms: 27.504218
+  ...
+# Subtest: acepta una reserva válida
+ok 7 - acepta una reserva válida
+  ---
+  duration_ms: 3.484053
+  ...
+# Subtest: R1 duración
+ok 8 - R1 duración
+  ---
+  duration_ms: 0.768462
+  ...
+# Subtest: R2 horario y alineación
+ok 9 - R2 horario y alineación
+  ---
+  duration_ms: 0.795733
+  ...
+# Subtest: R3 pasado
+ok 10 - R3 pasado
+  ---
+  duration_ms: 0.511564
+  ...
+# Subtest: entradas mal formadas -> 400
+ok 11 - entradas mal formadas -> 400
+  ---
+  duration_ms: 0.627707
+  ...
+# Subtest: slots de 30 min y ocupación
+ok 12 - slots de 30 min y ocupación
+  ---
+  duration_ms: 1.209047
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 953.262065

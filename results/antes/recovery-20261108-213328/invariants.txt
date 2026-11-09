@@ -1,0 +1,6 @@
+[invariantes] reservas totales=315816 (creadas en 2028 por pruebas=450)
+  OK   R1 duración 30–240 min múltiplo de 30
+  OK   R2 dentro del horario y mismo día
+  OK   R4 sin traslapes por recurso (confirmadas)
+  OK   R5 máximo 2 confirmadas por cliente por día
+[invariantes] TODAS las reglas se conservan

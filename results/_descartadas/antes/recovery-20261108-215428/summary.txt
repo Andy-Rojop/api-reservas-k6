@@ -1,0 +1,34 @@
+     ✗ list 200
+      ↳  95% — ✓ 434 / ✗ 19
+     ✗ list paginación coherente
+      ↳  95% — ✓ 434 / ✗ 19
+     ✗ availability 200
+      ↳  72% — ✓ 781 / ✗ 297
+     ✗ availability 24 bloques
+      ↳  72% — ✓ 781 / ✗ 297
+     ✗ create 201|409|422
+      ↳  71% — ✓ 194 / ✗ 76
+     ✓ create 201 devuelve id
+
+     business_rejections............: 108    0.599989/s
+     checks.........................: 80.34% ✓ 2894      ✗ 708 
+     ✗ { phase:recovery }...........: 80.34% ✓ 2894      ✗ 708 
+     data_received..................: 3.8 MB 21 kB/s
+     data_sent......................: 238 kB 1.3 kB/s
+     http_req_blocked...............: avg=46.99µs  min=0s      med=10.25µs  max=1.26ms p(90)=16.06µs  p(95)=422.42µs p(99)=697.01µs
+     http_req_connecting............: avg=24.61µs  min=0s      med=0s       max=1.09ms p(90)=0s       p(95)=280.89µs p(99)=503.89µs
+     http_req_duration..............: avg=20.35ms  min=0s      med=5.12ms   max=2.58s  p(90)=35.94ms  p(95)=51.93ms  p(99)=72.98ms 
+       { expected_response:true }...: avg=25.13ms  min=3.26ms  med=5.57ms   max=2.58s  p(90)=50.67ms  p(95)=53.55ms  p(99)=161.7ms 
+     ✓ { phase:recovery }...........: avg=20.35ms  min=0s      med=5.12ms   max=2.58s  p(90)=35.94ms  p(95)=51.93ms  p(99)=72.98ms 
+     http_req_failed................: 21.76% ✓ 392       ✗ 1409
+     ✗ { phase:recovery }...........: 21.76% ✓ 392       ✗ 1409
+     http_req_receiving.............: avg=125.31µs min=0s      med=114.46µs max=1.39ms p(90)=174.31µs p(95)=198.97µs p(99)=305.77µs
+     http_req_sending...............: avg=71.19µs  min=0s      med=62.16µs  max=1.39ms p(90)=98.21µs  p(95)=120.06µs p(99)=238.64µs
+     http_req_tls_handshaking.......: avg=0s       min=0s      med=0s       max=0s     p(90)=0s       p(95)=0s       p(99)=0s      
+     http_req_waiting...............: avg=20.15ms  min=0s      med=4.93ms   max=2.58s  p(90)=35.74ms  p(95)=51.71ms  p(99)=72.79ms 
+     http_reqs......................: 1801   10.005365/s
+     iteration_duration.............: avg=20.88ms  min=628.6µs med=5.63ms   max=2.58s  p(90)=36.6ms   p(95)=52.54ms  p(99)=73.45ms 
+     iterations.....................: 1801   10.005365/s
+     reservations_created...........: 86     0.477769/s
+     vus............................: 0      min=0       max=8 
+     vus_max........................: 20     min=20      max=20

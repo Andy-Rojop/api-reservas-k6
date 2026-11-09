@@ -1,0 +1,173 @@
+
+=================== LISTADO por recurso (página 3)
+                                               QUERY PLAN                                                
+---------------------------------------------------------------------------------------------------------
+ Limit (actual rows=20 loops=1)
+   Buffers: shared hit=12
+   ->  Nested Loop (actual rows=60 loops=1)
+         Buffers: shared hit=12
+         ->  Index Scan using reservations_resource_start_idx on reservations r (actual rows=60 loops=1)
+               Index Cond: (resource_id = 7)
+               Buffers: shared hit=11
+         ->  Materialize (actual rows=1 loops=60)
+               Buffers: shared hit=1
+               ->  Seq Scan on resources s (actual rows=1 loops=1)
+                     Filter: (id = 7)
+                     Rows Removed by Filter: 39
+                     Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=262
+ Planning Time: 0.976 ms
+ Execution Time: 0.193 ms
+(17 rows)
+
+
+=================== CONTEO del listado por recurso
+                                                QUERY PLAN                                                
+----------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   Buffers: shared hit=5 read=68
+   ->  Index Only Scan using reservations_resource_start_idx on reservations r (actual rows=7885 loops=1)
+         Index Cond: (resource_id = 7)
+         Heap Fetches: 0
+         Buffers: shared hit=5 read=68
+ Planning:
+   Buffers: shared hit=165
+ Planning Time: 0.675 ms
+ Execution Time: 2.368 ms
+(10 rows)
+
+
+=================== LISTADO por cliente en un año
+                                                                                              QUERY PLAN                                                                                               
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit (actual rows=20 loops=1)
+   Buffers: shared hit=16 read=15
+   ->  Sort (actual rows=20 loops=1)
+         Sort Key: r.start_at DESC, r.id DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=16 read=15
+         ->  Hash Join (actual rows=21 loops=1)
+               Hash Cond: (r.resource_id = s.id)
+               Buffers: shared hit=10 read=15
+               ->  Bitmap Heap Scan on reservations r (actual rows=21 loops=1)
+                     Recheck Cond: ((customer_id = 1234) AND (start_at >= '2026-01-01 06:00:00+00'::timestamp with time zone) AND (start_at < '2027-01-01 06:00:00+00'::timestamp with time zone))
+                     Heap Blocks: exact=21
+                     Buffers: shared hit=9 read=15
+                     ->  Bitmap Index Scan on reservations_customer_start_idx (actual rows=21 loops=1)
+                           Index Cond: ((customer_id = 1234) AND (start_at >= '2026-01-01 06:00:00+00'::timestamp with time zone) AND (start_at < '2027-01-01 06:00:00+00'::timestamp with time zone))
+                           Buffers: shared hit=2 read=1
+               ->  Hash (actual rows=40 loops=1)
+                     Buckets: 1024  Batches: 1  Memory Usage: 10kB
+                     Buffers: shared hit=1
+                     ->  Seq Scan on resources s (actual rows=40 loops=1)
+                           Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=344
+ Planning Time: 1.263 ms
+ Execution Time: 0.450 ms
+(25 rows)
+
+
+=================== CONTEO del listado por cliente
+                                                                                     QUERY PLAN                                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   Buffers: shared hit=4
+   ->  Index Only Scan using reservations_customer_start_idx on reservations r (actual rows=21 loops=1)
+         Index Cond: ((customer_id = 1234) AND (start_at >= '2026-01-01 06:00:00+00'::timestamp with time zone) AND (start_at < '2027-01-01 06:00:00+00'::timestamp with time zone))
+         Heap Fetches: 0
+         Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=183
+ Planning Time: 0.843 ms
+ Execution Time: 0.180 ms
+(10 rows)
+
+
+=================== LISTADO general (página 30, 50 por página)
+                                            QUERY PLAN                                            
+--------------------------------------------------------------------------------------------------
+ Limit (actual rows=50 loops=1)
+   Buffers: shared hit=291 read=10
+   ->  Nested Loop (actual rows=1500 loops=1)
+         Buffers: shared hit=291 read=10
+         ->  Index Scan using reservations_start_idx on reservations r (actual rows=1500 loops=1)
+               Filter: (status = 'confirmed'::text)
+               Rows Removed by Filter: 88
+               Buffers: shared hit=250 read=10
+         ->  Memoize (actual rows=1 loops=1500)
+               Cache Key: r.resource_id
+               Cache Mode: logical
+               Hits: 1460  Misses: 40  Evictions: 0  Overflows: 0  Memory Usage: 5kB
+               Buffers: shared hit=41
+               ->  Index Only Scan using resources_pkey on resources s (actual rows=1 loops=40)
+                     Index Cond: (id = r.resource_id)
+                     Heap Fetches: 0
+                     Buffers: shared hit=41
+ Planning:
+   Buffers: shared hit=334
+ Planning Time: 1.249 ms
+ Execution Time: 1.685 ms
+(21 rows)
+
+
+=================== CONTEO del listado general
+                                    QUERY PLAN                                     
+-----------------------------------------------------------------------------------
+ Finalize Aggregate (actual rows=1 loops=1)
+   Buffers: shared hit=542 read=2710
+   ->  Gather (actual rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=542 read=2710
+         ->  Partial Aggregate (actual rows=1 loops=3)
+               Buffers: shared hit=542 read=2710
+               ->  Parallel Seq Scan on reservations r (actual rows=99141 loops=3)
+                     Filter: (status = 'confirmed'::text)
+                     Rows Removed by Filter: 6001
+                     Buffers: shared hit=542 read=2710
+ Planning:
+   Buffers: shared hit=158
+ Planning Time: 0.650 ms
+ Execution Time: 93.164 ms
+(16 rows)
+
+
+=================== R5: reservas del cliente en el día (dentro de POST /reservations)
+                                                                                     QUERY PLAN                                                                                      
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   Buffers: shared hit=3
+   ->  Index Scan using reservations_customer_start_idx on reservations (actual rows=0 loops=1)
+         Index Cond: ((customer_id = 1234) AND (start_at >= '2028-03-01 06:00:00+00'::timestamp with time zone) AND (start_at < '2028-03-02 06:00:00+00'::timestamp with time zone))
+         Filter: (status = 'confirmed'::text)
+         Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=204
+ Planning Time: 0.858 ms
+ Execution Time: 0.116 ms
+(10 rows)
+
+
+=================== DISPONIBILIDAD de un recurso en un día
+                                                                                                   QUERY PLAN                                                                                                    
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort (actual rows=8 loops=1)
+   Sort Key: start_at
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=7
+   ->  Bitmap Heap Scan on reservations (actual rows=8 loops=1)
+         Recheck Cond: ((resource_id = 7) AND (start_at < '2026-05-05 06:00:00+00'::timestamp with time zone) AND (start_at >= ('2026-05-04 06:00:00+00'::timestamp with time zone - '04:00:00'::interval)))
+         Filter: ((end_at > '2026-05-04 06:00:00+00'::timestamp with time zone) AND (status = 'confirmed'::text))
+         Heap Blocks: exact=1
+         Buffers: shared hit=4
+         ->  Bitmap Index Scan on reservations_resource_start_idx (actual rows=8 loops=1)
+               Index Cond: ((resource_id = 7) AND (start_at < '2026-05-05 06:00:00+00'::timestamp with time zone) AND (start_at >= ('2026-05-04 06:00:00+00'::timestamp with time zone - '04:00:00'::interval)))
+               Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=210
+ Planning Time: 0.965 ms
+ Execution Time: 0.147 ms
+(16 rows)
+

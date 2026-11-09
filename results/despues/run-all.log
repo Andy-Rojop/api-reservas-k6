@@ -1,0 +1,264 @@
+════ run-all despues · 2026-11-08T21:37:31-06:00 · commit 18fa599 v2-fix
+
+──── 21:37:31 Construyendo e iniciando contenedores
+#0 building with "default" instance using docker driver
+
+#1 [api internal] load build definition from Dockerfile
+#1 transferring dockerfile: 280B 0.0s done
+#1 DONE 0.0s
+
+#2 [api internal] load metadata for docker.io/library/node:22.11-alpine
+#2 DONE 2.3s
+
+#3 [api internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [api 1/8] FROM docker.io/library/node:22.11-alpine@sha256:b64ced2e7cd0a4816699fe308ce6e8a08ccba463c757c00c14cd372e3d2c763e
+#4 DONE 0.0s
+
+#5 [api internal] load build context
+#5 transferring context: 10.09kB 0.0s done
+#5 DONE 0.0s
+
+#6 [api 2/8] WORKDIR /app
+#6 CACHED
+
+#7 [api 3/8] COPY package.json package-lock.json ./
+#7 CACHED
+
+#8 [api 4/8] RUN npm ci --omit=dev
+#8 CACHED
+
+#9 [api 5/8] COPY src ./src
+#9 DONE 0.1s
+
+#10 [api 6/8] COPY scripts ./scripts
+#10 DONE 0.1s
+
+#11 [api 7/8] COPY db ./db
+#11 DONE 0.0s
+
+#12 [api 8/8] COPY test ./test
+#12 DONE 0.0s
+
+#13 [api] exporting to image
+#13 exporting layers 0.1s done
+#13 writing image sha256:69f5f576f95005c236db2ff4e0a9595062dadfb77add85cf8b4f56de44f43d99 done
+#13 naming to docker.io/library/api-reservas-k6-api done
+#13 DONE 0.1s
+ Container reservas-db  Running
+ Container reservas-api  Recreate
+ Container reservas-api  Recreated
+ Container reservas-db  Waiting
+ Container reservas-db  Healthy
+ Container reservas-api  Starting
+ Container reservas-api  Started
+
+──── 21:37:39 Restableciendo entorno
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 39.9 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+
+──── 21:39:25 Planes de ejecución → results/despues/explain.txt
+  Seq Scan encontrados: 3
+
+──── 21:39:29 Regresión funcional → results/despues/regresion.txt
+# tests 12
+# pass 12
+# fail 0
+
+──── 21:39:30 Humo
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 39.5 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+   -      (todos)          184   3.07     5.9     9.5    10.5    13.7    14.6      0.0       63       0
+   - availability           59   0.98     5.6     6.4     6.8     7.4     7.6      0.0        0        
+   -         list           59   0.98     5.3     6.7     7.6     9.8    12.0      0.0        0        
+   -       create           59   0.98     8.9    10.8    13.5    14.1    14.6      0.0       59        
+
+✔ results/despues/smoke-20261108-214115/analysis.md · timeline.png · timeline.csv
+
+──── 21:42:49 Carga sostenida 1/3 (11 min)
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 39.5 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m100.00%[0m [36;2m✓ 24002[0m    [36;2m✗ 0[0m    
+     [32m✓[0m { phase:steady,endpoint:availability }[2m...:[0m avg=[36m5.19ms[0m  min=[36m3.33ms[0m  med=[36m4.98ms[0m   max=[36m49.13ms[0m  p(90)=[36m5.93ms[0m   p(95)=[36m6.24ms[0m   p(99)=[36m7.91ms[0m  
+     [32m✓[0m { phase:steady,endpoint:create }[2m.........:[0m avg=[36m12.09ms[0m min=[36m6.3ms[0m   med=[36m11.77ms[0m  max=[36m61.45ms[0m  p(90)=[36m13.23ms[0m  p(95)=[36m14.13ms[0m  p(99)=[36m23.34ms[0m 
+     [32m✓[0m { phase:steady,endpoint:list }[2m...........:[0m avg=[36m9.87ms[0m  min=[36m3.59ms[0m  med=[36m5.47ms[0m   max=[36m153.52ms[0m p(90)=[36m32.42ms[0m  p(95)=[36m36.35ms[0m  p(99)=[36m99.68ms[0m 
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m0.00%[0m   [36;2m✓ 0[0m        [36;2m✗ 12001[0m
+■ k6 código de salida: 0  (0 = umbrales OK · 99 = umbral incumplido o abortado por seguridad)
+■ Reglas de negocio: conservadas
+■ Evidencia original en results/despues/load-20261108-214435
+  fase     endpoint  solicitudes  req/s  p50_ms  p90_ms  p95_ms  p99_ms  max_ms  error_%  409/422 dropped
+steady      (todos)        12001  19.97     5.3    11.8    13.0    41.1   153.5      0.0       20       0
+steady availability         7231  12.03     5.0     5.9     6.2     7.9    49.1      0.0        0        
+steady         list         2975   4.95     5.5    32.4    36.4    99.7   153.5      0.0        0        
+steady       create         1795   2.99    11.8    13.2    14.1    23.3    61.5      0.0       20        
+
+──── 21:56:17 Carga sostenida 2/3 (11 min)
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 42.4 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m100.00%[0m [36;2m✓ 24002[0m     [36;2m✗ 0[0m    
+     [32m✓[0m { phase:steady,endpoint:availability }[2m...:[0m avg=[36m5.4ms[0m   min=[36m3.39ms[0m  med=[36m5.13ms[0m   max=[36m58.1ms[0m   p(90)=[36m6.14ms[0m   p(95)=[36m6.68ms[0m   p(99)=[36m8.78ms[0m  
+     [32m✓[0m { phase:steady,endpoint:create }[2m.........:[0m avg=[36m12.44ms[0m min=[36m7.59ms[0m  med=[36m11.96ms[0m  max=[36m77.41ms[0m  p(90)=[36m13.96ms[0m  p(95)=[36m15.47ms[0m  p(99)=[36m20.44ms[0m 
+     [32m✓[0m { phase:steady,endpoint:list }[2m...........:[0m avg=[36m10.35ms[0m min=[36m3.89ms[0m  med=[36m5.68ms[0m   max=[36m214.22ms[0m p(90)=[36m32.52ms[0m  p(95)=[36m37.25ms[0m  p(99)=[36m102.76ms[0m
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m0.00%[0m   [36;2m✓ 0[0m         [36;2m✗ 12001[0m
+■ k6 código de salida: 0  (0 = umbrales OK · 99 = umbral incumplido o abortado por seguridad)
+■ Reglas de negocio: conservadas
+■ Evidencia original en results/despues/load-20261108-215815
+  fase     endpoint  solicitudes  req/s  p50_ms  p90_ms  p95_ms  p99_ms  max_ms  error_%  409/422 dropped
+steady      (todos)        12001  19.97     5.4    12.0    13.4    42.0   214.2      0.0       25       0
+steady availability         7288  12.13     5.1     6.1     6.7     8.8    58.1      0.0        0        
+steady         list         2916   4.85     5.7    32.5    37.3   102.8   214.2      0.0        0        
+steady       create         1797   2.99    12.0    14.0    15.5    20.4    77.4      0.0       25        
+
+──── 22:09:52 Carga sostenida 3/3 (11 min)
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 39.8 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m100.00%[0m [36;2m✓ 24002[0m     [36;2m✗ 0[0m    
+     [32m✓[0m { phase:steady,endpoint:availability }[2m...:[0m avg=[36m5.13ms[0m   min=[36m2.65ms[0m  med=[36m5.02ms[0m   max=[36m45.85ms[0m  p(90)=[36m5.94ms[0m   p(95)=[36m6.21ms[0m   p(99)=[36m6.95ms[0m  
+     [32m✓[0m { phase:steady,endpoint:create }[2m.........:[0m avg=[36m12.27ms[0m  min=[36m5.39ms[0m  med=[36m11.64ms[0m  max=[36m177.53ms[0m p(90)=[36m13.12ms[0m  p(95)=[36m13.94ms[0m  p(99)=[36m33.36ms[0m 
+     [32m✓[0m { phase:steady,endpoint:list }[2m...........:[0m avg=[36m9.29ms[0m   min=[36m2.91ms[0m  med=[36m5.57ms[0m   max=[36m132.31ms[0m p(90)=[36m31.04ms[0m  p(95)=[36m35.11ms[0m  p(99)=[36m54.89ms[0m 
+     [32m✓[0m { phase:steady }[2m.........................:[0m [36m0.00%[0m   [36;2m✓ 0[0m         [36;2m✗ 12001[0m
+■ k6 código de salida: 0  (0 = umbrales OK · 99 = umbral incumplido o abortado por seguridad)
+■ Reglas de negocio: conservadas
+■ Evidencia original en results/despues/load-20261108-221137
+  fase     endpoint  solicitudes  req/s  p50_ms  p90_ms  p95_ms  p99_ms  max_ms  error_%  409/422 dropped
+steady      (todos)        12001  19.97     5.3    11.7    12.8    37.8   177.5      0.0       24       0
+steady availability         7200  11.98     5.0     5.9     6.2     7.0    45.9      0.0        0        
+steady         list         2982   4.96     5.6    31.0    35.1    54.9   132.3      0.0        0        
+steady       create         1819   3.03    11.6    13.1    13.9    33.4   177.5      0.0       24        
+
+──── 22:23:14 Estrés 1/1 (~19 min)
+▶ Restableciendo datos…
+[reset] eliminando esquema public…
+[reset] migración 001_schema.sql
+[reset] migración 002_indexes.sql
+[reset] sembrando datos (puede tardar ~30-90 s)…
+[reset] listo en 39.7 s → {
+  resources: '40',
+  customers: '5000',
+  reservations: '315366',
+  confirmed: '297363'
+}
+[reset] migraciones aplicadas: 001_schema.sql, 002_indexes.sql
+▶ Reiniciando contenedores (caché fría de PostgreSQL)…
+ Container reservas-db  Restarting
+ Container reservas-db  Started
+ Container reservas-api  Restarting
+ Container reservas-api  Started
+▶ Calentamiento: humo de 1 min (también valida que todo funciona)…
+✔ Entorno listo (humo OK)
+     [32m✓[0m { phase:recovery }[2m.......................:[0m [36m100.00%[0m [36;2m✓ 3602[0m      [36;2m✗ 0[0m    
+     [32m✓[0m { phase:recovery }[2m.......................:[0m avg=[36m7.17ms[0m  min=[36m3.86ms[0m  med=[36m5.5ms[0m    max=[36m164.4ms[0m  p(90)=[36m11.83ms[0m  p(95)=[36m12.82ms[0m  p(99)=[36m35.25ms[0m 
+     [32m✓[0m { phase:stress }[2m.........................:[0m avg=[36m9.7ms[0m   min=[36m1.44ms[0m  med=[36m4.78ms[0m   max=[36m1.04s[0m    p(90)=[36m11.51ms[0m  p(95)=[36m32.75ms[0m  p(99)=[36m93.04ms[0m 
+     [32m✓[0m { phase:recovery }[2m.......................:[0m [36m0.00%[0m   [36;2m✓ 0[0m         [36;2m✗ 1801[0m 
+     [32m✓[0m { phase:stress }[2m.........................:[0m [36m0.00%[0m   [36;2m✓ 0[0m         [36;2m✗ 51022[0m
+     [32m✓[0m { phase:recovery }[2m.......................:[0m [36m1801[0m    [36;2m1.622617/s[0m
+     [32m✓[0m { phase:stress }[2m.........................:[0m [36m51022[0m   [36;2m45.968442/s[0m
+■ k6 código de salida: 0  (0 = umbrales OK · 99 = umbral incumplido o abortado por seguridad)
+■ Reglas de negocio: conservadas
+■ Evidencia original en results/despues/stress-20261108-222459
+    fase     endpoint  solicitudes  req/s  p50_ms  p90_ms  p95_ms  p99_ms  max_ms  error_%  409/422 dropped
+  stress      (todos)        51022  56.69     4.8    11.5    32.8    93.0  1045.3      0.0      326       0
+  stress availability        30714  34.13     4.4     5.5     6.7    64.5   678.8      0.0        0        
+  stress         list        12616  14.02     5.0    34.4    46.0   141.9  1045.3      0.0        0        
+  stress       create         7692   8.55    10.5    13.1    28.2   122.8   793.8      0.0      326        
+recovery      (todos)         1801   9.95     5.5    11.8    12.8    35.3   164.4      0.0       21       0
+recovery availability         1073   5.93     5.1     6.0     6.4     7.5    12.0      0.0        0        
+recovery         list          454   2.51     5.8     8.4    34.9    65.6   164.4      0.0        0        
+recovery       create          274   1.51    11.9    13.2    13.5    14.4    15.3      0.0       21        
+
+──── 22:44:17 Fin. Resultados en results/despues/
+explain.txt
+load-20261108-214435
+load-20261108-215815
+load-20261108-221137
+regresion.txt
+run-all.log
+smoke-20261108-214115
+stress-20261108-222459

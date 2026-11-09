@@ -1,0 +1,16 @@
+ calls | total_ms | mean_ms | max_ms | rows | blocks | pct_tiempo |                                                                                                                                query                                                                                                                                 
+-------+----------+---------+--------+------+--------+------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    62 |     2904 |   46.83 |  143.4 |   62 | 202965 |       73.4 | SELECT count(*)::int AS total FROM reservations r WHERE r.status = $1
+   299 |      534 |    1.79 |   44.8 |  299 |  34817 |       13.5 | SELECT count(*)::int AS total FROM reservations r WHERE r.resource_id = $1
+    62 |      147 |    2.36 |   43.5 | 3100 |  69853 |        3.7 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.status = $1 ORDER BY r.start_at DESC, r.id DESC LIMIT $2 OFFSET $3
+  1246 |       80 |    0.06 |    0.6 | 8396 |   5148 |        2.0 | SELECT start_at, end_at FROM reservations WHERE resource_id = $1 AND status = $4 AND start_at < $3 AND end_at > $2 -- Cota inferior equivalente por R1 (ninguna reserva dura más de 240 min): -- permite un rango acotado sobre el índice (resource_id, start_at) AN
+   189 |       73 |    0.39 |    1.7 |  189 |   5523 |        1.8 | INSERT INTO reservations (resource_id, customer_id, start_at, end_at) VALUES ($1, $2, $3, $4) RETURNING id, resource_id, customer_id, start_at, end_at, status, created_at
+    28 |       58 |    2.07 |   51.5 |   28 |     28 |        1.5 | select count(*) filter (where state=$1), count(*) filter (where wait_event_type=$2) from pg_stat_activity where datname=current_database() and pid<>pg_backend_pid()
+   299 |       47 |    0.16 |    0.5 | 5980 |  13171 |        1.2 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.resource_id = $1 ORDER BY r.start_at DESC, r.id DESC LIMIT $2 OFFSET $3
+  1531 |       39 |    0.03 |    0.4 | 1531 |   1531 |        1.0 | SELECT id, name, type, capacity, open_hour, close_hour FROM resources WHERE id = $1
+   151 |       31 |    0.20 |    0.8 | 3020 |   3789 |        0.8 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.customer_id = $1 AND r.start_at >= $2 AND r.start_at < $3 ORDER BY r.start_at 
+   285 |       16 |    0.05 |    1.0 |  285 |    948 |        0.4 | SELECT count(*)::int AS n FROM reservations WHERE customer_id = $1 AND status = $4 AND start_at >= $2 AND start_at < $3
+   151 |       13 |    0.08 |    1.1 |  151 |    611 |        0.3 | SELECT count(*)::int AS total FROM reservations r WHERE r.customer_id = $1 AND r.start_at >= $2 AND r.start_at < $3
+   285 |        8 |    0.03 |    0.6 |  285 |    855 |        0.2 | SELECT id FROM customers WHERE id = $1
+(12 rows)
+

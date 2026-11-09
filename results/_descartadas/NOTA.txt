@@ -1,0 +1,8 @@
+Corridas descartadas por error de ejecución (2026-11-08):
+- antes/recovery-20261108-215428: se lanzó como recuperación adicional de la versión "antes", pero los
+  contenedores ya ejecutaban v2-fix (run-all despues estaba corriendo en otra terminal) y a las 21:56:17
+  el reset de la carga 2/3 reinició la base durante la prueba. No mide la versión "antes" y tiene 21,8 %
+  de errores causados por el reinicio.
+- despues/load-20261108-214435: su último minuto recibió 10 req/s adicionales de la corrida anterior.
+  Se reemplazó por load-20261108-225058, ejecutada en las mismas condiciones.
+Se conservan sin modificar como evidencia; no se usan en el análisis.

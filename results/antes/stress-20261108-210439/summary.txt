@@ -1,0 +1,39 @@
+     ✓ create 201|409|422
+     ✓ create 201 devuelve id
+     ✓ list 200
+     ✓ list paginación coherente
+     ✓ availability 200
+     ✓ availability 24 bloques
+
+     business_rejections........................: 1       0.01516/s
+     checks.....................................: 100.00% ✓ 1212     ✗ 0   
+     ✓ { phase:recovery }.......................: 0.00%   ✓ 0        ✗ 0   
+     data_received..............................: 1.8 MB  27 kB/s
+     data_sent..................................: 92 kB   1.4 kB/s
+     dropped_iterations.........................: 47      0.712522/s
+     ✓ { scenario:estres }......................: 47      0.712522/s
+     ✓ { scenario:recuperacion }................: 0       0/s
+     http_req_blocked...........................: avg=71.87µs  min=7.44µs  med=10.82µs  max=1.42ms  p(90)=337.53µs p(95)=569.58µs p(99)=756.44µs
+     http_req_connecting........................: avg=43.6µs   min=0s      med=0s       max=1.05ms  p(90)=217.63µs p(95)=402.62µs p(99)=579.37µs
+     http_req_duration..........................: avg=2.21s    min=8.82ms  med=2.32s    max=10.59s  p(90)=4.18s    p(95)=5.18s    p(99)=6.45s   
+       { expected_response:true }...............: avg=2.21s    min=8.82ms  med=2.32s    max=10.59s  p(90)=4.18s    p(95)=5.18s    p(99)=6.45s   
+     ✓ { phase:recovery }.......................: avg=0s       min=0s      med=0s       max=0s      p(90)=0s       p(95)=0s       p(99)=0s      
+     ✓ { phase:stress,endpoint:availability }...: avg=2.23s    min=8.82ms  med=2.57s    max=6.14s   p(90)=3.88s    p(95)=5.18s    p(99)=6.06s   
+     ✓ { phase:stress,endpoint:create }.........: avg=2.61s    min=33.68ms med=3.11s    max=6.97s   p(90)=4.81s    p(95)=6.03s    p(99)=6.57s   
+     ✓ { phase:stress,endpoint:list }...........: avg=1.98s    min=34.6ms  med=1.94s    max=10.59s  p(90)=3.15s    p(95)=4.59s    p(99)=9.31s   
+     ✗ { phase:stress }.........................: avg=2.21s    min=8.82ms  med=2.32s    max=10.59s  p(90)=4.18s    p(95)=5.18s    p(99)=6.45s   
+     http_req_failed............................: 0.00%   ✓ 0        ✗ 606 
+     ✓ { phase:recovery }.......................: 0.00%   ✓ 0        ✗ 0   
+     ✓ { phase:stress }.........................: 0.00%   ✓ 0        ✗ 606 
+     http_req_receiving.........................: avg=167.62µs min=60.26µs med=149.65µs max=1.67ms  p(90)=218.32µs p(95)=263.42µs p(99)=649.08µs
+     http_req_sending...........................: avg=77.6µs   min=19.12µs med=66.91µs  max=398.8µs p(90)=109.8µs  p(95)=149.2µs  p(99)=248.86µs
+     http_req_tls_handshaking...................: avg=0s       min=0s      med=0s       max=0s      p(90)=0s       p(95)=0s       p(99)=0s      
+     http_req_waiting...........................: avg=2.21s    min=8.62ms  med=2.32s    max=10.59s  p(90)=4.18s    p(95)=5.18s    p(99)=6.45s   
+     http_reqs..................................: 606     9.186987/s
+     ✓ { phase:recovery }.......................: 0       0/s
+     ✓ { phase:stress }.........................: 606     9.186987/s
+     iteration_duration.........................: avg=2.21s    min=9.28ms  med=2.32s    max=10.59s  p(90)=4.18s    p(95)=5.18s    p(99)=6.45s   
+     iterations.................................: 606     9.186987/s
+     reservations_created.......................: 78      1.182484/s
+     vus........................................: 96      min=0      max=96
+     vus_max....................................: 97      min=50     max=97

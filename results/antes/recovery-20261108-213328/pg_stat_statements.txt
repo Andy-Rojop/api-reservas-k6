@@ -1,0 +1,16 @@
+ calls | total_ms | mean_ms | max_ms | rows | blocks  | pct_tiempo |                                                                                                                                query                                                                                                                                 
+-------+----------+---------+--------+------+---------+------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    49 |   142223 | 2902.51 | 9501.2 | 2450 |  166556 |       26.6 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.status = $1 ORDER BY r.start_at DESC, r.id DESC LIMIT $2 OFFSET $3
+   276 |    88944 |  322.26 | 1188.9 | 5520 |  922272 |       16.6 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.resource_id = $1 ORDER BY r.start_at DESC, r.id DESC LIMIT $2 OFFSET $3
+   276 |    81067 |  293.72 | 1309.0 |  276 |  903274 |       15.2 | SELECT count(*)::int AS total FROM reservations r WHERE r.resource_id = $1
+   271 |    60262 |  222.37 | 1010.6 |  271 |  886954 |       11.3 | SELECT count(*)::int AS n FROM reservations WHERE customer_id = $1 AND status = $4 AND start_at >= $2 AND start_at < $3
+   126 |    54735 |  434.41 | 1301.0 | 2520 |  428606 |       10.2 | SELECT r.id, r.resource_id, s.name AS resource_name, r.customer_id, r.start_at, r.end_at, r.status, r.created_at FROM reservations r JOIN resources s ON s.id = r.resource_id WHERE r.customer_id = $1 AND r.start_at >= $2 AND r.start_at < $3 ORDER BY r.start_at 
+   126 |    51156 |  406.00 | 1302.1 |  126 |  412296 |        9.6 | SELECT count(*)::int AS total FROM reservations r WHERE r.customer_id = $1 AND r.start_at >= $2 AND r.start_at < $3
+  1069 |    30985 |   28.99 | 1206.8 | 7264 | 1386591 |        5.8 | SELECT start_at, end_at FROM reservations WHERE resource_id = $1 AND status = $4 AND start_at < $3 AND end_at > $2 ORDER BY start_at
+    49 |    24821 |  506.56 | 1393.0 |   49 |  160332 |        4.6 | SELECT count(*)::int AS total FROM reservations r WHERE r.status = $1
+   271 |      324 |    1.19 |  200.5 |  271 |     813 |        0.1 | SELECT id FROM customers WHERE id = $1
+    66 |      202 |    3.06 |   90.9 |   66 |    1461 |        0.0 | INSERT INTO reservations (resource_id, customer_id, start_at, end_at) VALUES ($1, $2, $3, $4) RETURNING id, resource_id, customer_id, start_at, end_at, status, created_at
+   271 |      116 |    0.43 |   99.7 |  271 |       0 |        0.0 | SELECT pg_advisory_xact_lock($2, $1)
+  1340 |       36 |    0.03 |    0.2 | 1340 |    1340 |        0.0 | SELECT id, name, type, capacity, open_hour, close_hour FROM resources WHERE id = $1
+(12 rows)
+
